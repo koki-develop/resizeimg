@@ -53,8 +53,9 @@ const ImageListItem = memo<ImageListItemProps>(
     }, [previewImage]);
 
     const handleClickRemove = useCallback(() => {
+      if (!confirm(`画像を削除しますか？(${file.name})`)) return;
       onRemove(id);
-    }, [onRemove, id]);
+    }, [file, onRemove, id]);
 
     useEffect(() => {
       if (!rendered) {

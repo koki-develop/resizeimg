@@ -4,12 +4,13 @@ import { ImageFile } from "@/types/imageFile";
 import React, { useCallback, useMemo, useState } from "react";
 import ImageListItem from "./ImageListItem";
 import ZipButton from "./ZipButton";
+import { useDropzone } from "react-dropzone";
+import clsx from "clsx";
 
 type FileWithId = { file: File; id: string };
 type ImageFileWithId = { imageFile: ImageFile; id: string };
 
 const HomePage = () => {
-  const [inputFileKey, setInputFileKey] = useState<number>(0);
   const [files, setFiles] = useState<FileWithId[]>([]);
   const [resizingCount, setResizingCount] = useState<number>(0);
   const [previewImageFiles, setPreviewImageFiles] = useState<ImageFileWithId[]>(
@@ -17,22 +18,20 @@ const HomePage = () => {
   );
   const resizing = useMemo(() => resizingCount > 0, [resizingCount]);
 
-  const handleChangeFile = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { files } = e.target;
-      if (!files) return;
-      if (files.length === 0) return;
-      setFiles((prev) => [
-        ...prev,
-        ...Array.from(files).map((file) => ({
-          file,
-          id: Math.random().toString(32),
-        })),
-      ]);
-      setInputFileKey((prev) => prev + 1);
-    },
-    [],
-  );
+  const handleChangeFile = useCallback((files: File[]) => {
+    if (files.length === 0) return;
+    setFiles((prev) => [
+      ...prev,
+      ...Array.from(files).map((file) => ({
+        file,
+        id: Math.random().toString(32),
+      })),
+    ]);
+  }, []);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop: handleChangeFile,
+  });
 
   const handleStartResize = useCallback(() => {
     setResizingCount((prev) => prev + 1);
@@ -82,12 +81,29 @@ const HomePage = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      <input
-        key={inputFileKey}
-        type="file"
-        multiple
-        onChange={handleChangeFile}
-      />
+      <h1 className="text-center font-bold text-3xl">Resize Image</h1>
+
+      <div className="flex justify-center">
+        <div
+          className={clsx(
+            "inline-block",
+            "border border-dashed border-gray-400",
+            "rounded",
+            "cursor-pointer",
+            "py-20 px-8 mb-4",
+            {
+              "bg-gray-200": !isDragActive,
+              "bg-gray-400": isDragActive,
+            },
+          )}
+          {...getRootProps()}
+        >
+          <input {...getInputProps()} />
+          <span className="text-gray-500">
+            ファイルをドロップするか、クリックしてファイルを選択してください
+          </span>
+        </div>
+      </div>
 
       <div className="flex flex-col gap-2">
         {files.map((file) => (
@@ -103,22 +119,23 @@ const HomePage = () => {
         ))}
       </div>
 
-      <div className="flex items-center gap-2 flex-col">
-        <ZipButton
-          imageFiles={previewImageFiles.map(
-            (previewImageFile) => previewImageFile.imageFile,
-          )}
-          disabled={resizing}
-        />
+      {files.length > 0 && (
+        <div className="flex items-center gap-2 flex-col">
+          <ZipButton
+            imageFiles={previewImageFiles.map(
+              (previewImageFile) => previewImageFile.imageFile,
+            )}
+            disabled={resizing}
+          />
 
-        <button
-          className="bg-red-500 p-2 text-sm text-white disabled:bg-gray-400"
-          onClick={handleRemoveAllImages}
-          disabled={files.length === 0}
-        >
-          すべて削除
-        </button>
-      </div>
+          <button
+            className="bg-red-500 p-2 text-sm text-white disabled:bg-gray-400"
+            onClick={handleRemoveAllImages}
+          >
+            すべて削除
+          </button>
+        </div>
+      )}
     </div>
   );
 };

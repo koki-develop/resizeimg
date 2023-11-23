@@ -61,7 +61,7 @@ const HomePage = () => {
   }, []);
 
   return (
-    <div>
+    <div className="flex flex-col gap-4">
       <input
         key={inputFileKey}
         type="file"
@@ -69,17 +69,19 @@ const HomePage = () => {
         onChange={handleChangeFile}
       />
 
-      {files.map((file, i) => (
-        <ImageListItem
-          key={file.id}
-          file={file.file}
-          index={i}
-          onStartResize={handleStartResize}
-          onEndResize={handleEndResize}
-          onResize={handleResize}
-          onRemove={handleRemoveImage}
-        />
-      ))}
+      <div className="flex flex-col gap-2">
+        {files.map((file, i) => (
+          <ImageListItem
+            key={file.id}
+            file={file.file}
+            index={i}
+            onStartResize={handleStartResize}
+            onEndResize={handleEndResize}
+            onResize={handleResize}
+            onRemove={handleRemoveImage}
+          />
+        ))}
+      </div>
 
       <div className="flex justify-center">
         <ZipButton imageFiles={previewImageFiles} disabled={resizing} />

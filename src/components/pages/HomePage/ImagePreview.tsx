@@ -1,4 +1,5 @@
 import { ImageFile, ImageSize } from "@/types/imageFile";
+import prettyBytes from "pretty-bytes";
 import React, { memo, useCallback } from "react";
 
 export type ImagePreviewProps = {
@@ -39,18 +40,23 @@ const ImagePreview = memo<ImagePreviewProps>(
 
     return (
       <div className="flex flex-col items-center">
-        {imageFile && !loading ? (
-          <div>
+        <div className="h-64 w-64">
+          {imageFile && !loading ? (
             <img
-              className="h-64 w-64 object-contain"
+              className="h-full w-full object-contain"
               src={imageFile.dataUrl}
               alt=""
             />
-            <div>{imageFile.filesize}</div>
-          </div>
-        ) : (
-          <div>loading...</div>
-        )}
+          ) : (
+            <div>loading...</div>
+          )}
+        </div>
+
+        <div className="text-gray-500 text-sm">
+          {imageFile && !loading
+            ? prettyBytes(imageFile.filesize)
+            : "ファイルサイズを計算中"}
+        </div>
 
         <table className="w-full">
           <tbody>

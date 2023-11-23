@@ -19,8 +19,10 @@ const ZipButton = memo(({ imageFiles, disabled }: ZipButtonProps) => {
   }, [disabled, imageFiles.length, zipping]);
 
   const zipBlobSize = useMemo(() => {
-    return zipBlob ? zipBlob.size : 0;
-  }, [zipBlob]);
+    if (imageFiles.length === 0) return 0;
+    if (!zipBlob) return 0;
+    return zipBlob.size;
+  }, [zipBlob, imageFiles.length]);
 
   useEffect(() => {
     let unmounted = false;
@@ -58,7 +60,7 @@ const ZipButton = memo(({ imageFiles, disabled }: ZipButtonProps) => {
     >
       <span>Zip 形式でまとめてダウンロード</span>
       <span className="text-sm">
-        {zipping ? "計算中" : prettyBytes(zipBlobSize)}
+        {zipping ? "ファイルサイズを計算中" : prettyBytes(zipBlobSize)}
       </span>
     </button>
   );

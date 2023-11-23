@@ -3,12 +3,14 @@
 import { ImageFile, ImageSize } from "@/types/imageFile";
 import {
   calcFilesizeFromDataUrl,
+  dataUrlToBlob,
   dataUrlToImage,
   fileToDataUrl,
   resizeDataUrl,
 } from "@/lib/image";
 import React, { memo, useCallback, useEffect, useState } from "react";
 import ImagePreview from "./ImagePreview";
+import { saveAs } from "file-saver";
 
 export type ImageListItemProps = {
   index: number;
@@ -39,6 +41,12 @@ const ImageListItem = memo<ImageListItemProps>(
     const handleChangePreviewImageSize = useCallback((size: ImageSize) => {
       setPreviewImageSize(size);
     }, []);
+
+    const handleClickDownload = useCallback(() => {
+      if (!previewImage) return;
+      const blob = dataUrlToBlob(previewImage.dataUrl);
+      saveAs(blob, previewImage.name);
+    }, [previewImage]);
 
     const handleClickRemove = useCallback(() => {
       onRemove(index);
@@ -105,7 +113,7 @@ const ImageListItem = memo<ImageListItemProps>(
     ]);
 
     return (
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center gap-4">
         {/* original image */}
         <div>
           <ImagePreview
@@ -126,8 +134,19 @@ const ImageListItem = memo<ImageListItemProps>(
         </div>
 
         {/* actions */}
-        <div>
-          <button onClick={handleClickRemove}>削除</button>
+        <div className="flex flex-col gap-2">
+          <button
+            className="bg-blue-400 p-2 text-white"
+            onClick={handleClickDownload}
+          >
+            ダウンロード
+          </button>
+          <button
+            className="bg-red-500 text-white p-2"
+            onClick={handleClickRemove}
+          >
+            削除
+          </button>
         </div>
       </div>
     );

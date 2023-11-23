@@ -83,26 +83,31 @@ const HomePage = () => {
     <div className="flex flex-col gap-4">
       <h1 className="text-center font-bold text-3xl">Resize Image</h1>
 
-      <div className="flex justify-center">
-        <div
-          className={clsx(
-            "inline-block",
-            "border border-dashed border-gray-400",
-            "rounded",
-            "cursor-pointer",
-            "py-20 px-8 mb-4",
-            {
-              "bg-gray-100": !isDragActive,
-              "bg-gray-300": isDragActive,
-            },
-          )}
-          {...getRootProps()}
-        >
-          <input {...getInputProps()} />
-          <span className="text-gray-500">
-            ファイルをドロップするか、クリックしてファイルを選択してください
-          </span>
+      <div>
+        <div className="flex justify-center">
+          <div
+            className={clsx(
+              "inline-block",
+              "border border-dashed border-gray-400",
+              "rounded",
+              "cursor-pointer",
+              "py-20 px-8 mb-4",
+              {
+                "bg-gray-100": !isDragActive,
+                "bg-gray-300": isDragActive,
+              },
+            )}
+            {...getRootProps()}
+          >
+            <input {...getInputProps()} />
+            <span className="text-gray-500">
+              ファイルをドロップするか、クリックしてファイルを選択してください
+            </span>
+          </div>
         </div>
+        <p className="text-center text-gray-500">
+          変換処理はすべてオフラインで実行されます
+        </p>
       </div>
 
       <div className="flex flex-col gap-8">
@@ -120,7 +125,7 @@ const HomePage = () => {
       </div>
 
       {files.length > 0 && (
-        <div className="flex items-center gap-2 flex-col">
+        <div className="flex items-center gap-4 flex-col">
           <ZipButton
             imageFiles={previewImageFiles.map(
               (previewImageFile) => previewImageFile.imageFile,

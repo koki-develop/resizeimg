@@ -15,6 +15,17 @@ export default function RootLayout({
     <html lang="ja">
       <body>
         <main className="p-8">{children}</main>
+
+        <footer className="flex flex-col items-center justify-center text-sm text-gray-500 p-8 gap-2">
+          <span>&copy; koki sato</span>
+          <a
+            href="https://github.com/koki-develop/resizeimg"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            View on GitHub
+          </a>
+        </footer>
       </body>
     </html>
   );

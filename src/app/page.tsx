@@ -1,3 +1,3 @@
-export default function Home() {
-  return <main>Hello World</main>;
-}
+import HomePage from "@/components/pages/HomePage";
+
+export default HomePage;

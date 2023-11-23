@@ -6,9 +6,10 @@ import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 
 export type ZipButtonProps = {
   imageFiles: ImageFile[];
+  disabled: boolean;
 };
 
-const ZipButton = memo(({ imageFiles }: ZipButtonProps) => {
+const ZipButton = memo(({ imageFiles, disabled }: ZipButtonProps) => {
   const [zipBlob, setZipBlob] = useState<Blob | null>(null);
 
   useEffect(() => {
@@ -37,7 +38,7 @@ const ZipButton = memo(({ imageFiles }: ZipButtonProps) => {
   }, [zipBlob]);
 
   return (
-    <button onClick={handleClickDownload}>
+    <button onClick={handleClickDownload} disabled={disabled}>
       Zip 形式でまとめてダウンロード
     </button>
   );

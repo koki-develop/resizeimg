@@ -69,7 +69,7 @@ const ImagePreview = memo<ImagePreviewProps>(
         </div>
 
         <div className="text-gray-500 flex flex-col justify-center">
-          <div className="text-sm">{label}</div>
+          <div className="text-sm text-center">{label}</div>
           <div className="text-sm">
             (
             {imageFile && !loading

@@ -84,6 +84,7 @@ const ImagePreview = memo<ImagePreviewProps>(
                     <input
                       className="text-right w-full border"
                       type="number"
+                      disabled={!imageFile}
                       value={imageSize.width}
                       onChange={handleChangeWidth}
                     />
@@ -104,6 +105,7 @@ const ImagePreview = memo<ImagePreviewProps>(
                     <input
                       className="text-right w-full border"
                       type="number"
+                      disabled={!imageFile}
                       value={imageSize.height}
                       onChange={handleChangeHeight}
                     />

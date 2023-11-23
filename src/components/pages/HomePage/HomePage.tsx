@@ -35,8 +35,11 @@ const HomePage = () => {
     setResizingCount((prev) => prev + 1);
   }, []);
 
-  const handleEndResize = useCallback((imageFile: ImageFile, index: number) => {
+  const handleEndResize = useCallback(() => {
     setResizingCount((prev) => prev - 1);
+  }, []);
+
+  const handleResize = useCallback((imageFile: ImageFile, index: number) => {
     setPreviewImageFiles((prev) => {
       const newPreviewImageFiles = [...prev];
       newPreviewImageFiles[index] = imageFile;
@@ -73,6 +76,7 @@ const HomePage = () => {
           index={i}
           onStartResize={handleStartResize}
           onEndResize={handleEndResize}
+          onResize={handleResize}
           onRemove={handleRemoveImage}
         />
       ))}

@@ -13,17 +13,17 @@ import ImagePreview from "./ImagePreview";
 import { saveAs } from "file-saver";
 
 export type ImageListItemProps = {
-  index: number;
+  id: string;
   file: File;
 
   onStartResize: () => void;
   onEndResize: () => void;
-  onResize: (imageFile: ImageFile, index: number) => void;
-  onRemove: (index: number) => void;
+  onResize: (imageFile: ImageFile, id: string) => void;
+  onRemove: (id: string) => void;
 };
 
 const ImageListItem = memo<ImageListItemProps>(
-  ({ index, file, onStartResize, onEndResize, onResize, onRemove }) => {
+  ({ id, file, onStartResize, onEndResize, onResize, onRemove }) => {
     const [rendered, setRendered] = useState<boolean>(false);
     const [resizing, setResizing] = useState<boolean>(false);
 
@@ -49,8 +49,8 @@ const ImageListItem = memo<ImageListItemProps>(
     }, [previewImage]);
 
     const handleClickRemove = useCallback(() => {
-      onRemove(index);
-    }, [onRemove, index]);
+      onRemove(id);
+    }, [onRemove, id]);
 
     useEffect(() => {
       if (!rendered) {
@@ -76,13 +76,14 @@ const ImageListItem = memo<ImageListItemProps>(
           setPreviewImageSize(imageSize);
         });
       }
-    }, [rendered, file, index, originalImage]);
+    }, [file, originalImage, rendered]);
 
     useEffect(() => {
       if (!originalImage) return;
-      onStartResize();
-      setResizing(true);
+
       const timeoutId = setTimeout(() => {
+        onStartResize();
+        setResizing(true);
         resizeDataUrl(originalImage.dataUrl, previewImageSize)
           .then((dataUrl) => {
             const filesize = calcFilesizeFromDataUrl(dataUrl);
@@ -92,7 +93,7 @@ const ImageListItem = memo<ImageListItemProps>(
               filesize,
             };
             setPreviewImage(imageFile);
-            onResize(imageFile, index);
+            onResize(imageFile, id);
           })
           .finally(() => {
             setResizing(false);
@@ -106,7 +107,7 @@ const ImageListItem = memo<ImageListItemProps>(
     }, [
       originalImage,
       previewImageSize,
-      index,
+      id,
       onResize,
       onEndResize,
       onStartResize,

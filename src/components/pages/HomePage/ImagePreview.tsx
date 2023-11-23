@@ -48,7 +48,9 @@ const ImagePreview = memo<ImagePreviewProps>(
               alt=""
             />
           ) : (
-            <div>loading...</div>
+            <div className="h-full w-full flex items-center justify-center">
+              loading...
+            </div>
           )}
         </div>
 
@@ -62,38 +64,42 @@ const ImagePreview = memo<ImagePreviewProps>(
           <tbody>
             <tr>
               <td className="w-1/2" align="right">
-                width
+                幅
               </td>
-              <td className="w-1/2 flex" align="right">
+              <td className="w-1/2" align="right">
                 {onChangeSize ? (
-                  <input
-                    className="text-right"
-                    type="number"
-                    value={imageSize.width}
-                    onChange={handleChangeWidth}
-                  />
+                  <span className="flex">
+                    <input
+                      className="text-right w-full"
+                      type="number"
+                      value={imageSize.width}
+                      onChange={handleChangeWidth}
+                    />
+                    px
+                  </span>
                 ) : (
-                  imageSize.width
+                  <span>{imageSize.width} px</span>
                 )}
-                px
               </td>
             </tr>
             <tr>
               <td className="w-1/2" align="right">
-                height
+                高さ
               </td>
-              <td className="w-1/2 flex" align="right">
+              <td className="w-1/2" align="right">
                 {onChangeSize ? (
-                  <input
-                    className="text-right"
-                    type="number"
-                    value={imageSize.height}
-                    onChange={handleChangeHeight}
-                  />
+                  <span className="flex">
+                    <input
+                      className="text-right w-full"
+                      type="number"
+                      value={imageSize.height}
+                      onChange={handleChangeHeight}
+                    />
+                    px
+                  </span>
                 ) : (
-                  imageSize.height
+                  <span>{imageSize.height} px</span>
                 )}
-                px
               </td>
             </tr>
           </tbody>

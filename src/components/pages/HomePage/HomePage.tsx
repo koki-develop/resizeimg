@@ -5,13 +5,16 @@ import React, { useCallback, useMemo, useState } from "react";
 import ImageListItem from "./ImageListItem";
 import ZipButton from "./ZipButton";
 
-export type FileWithId = { file: File; id: string };
+type FileWithId = { file: File; id: string };
+type ImageFileWithId = { imageFile: ImageFile; id: string };
 
 const HomePage = () => {
   const [inputFileKey, setInputFileKey] = useState<number>(0);
   const [files, setFiles] = useState<FileWithId[]>([]);
   const [resizingCount, setResizingCount] = useState<number>(0);
-  const [previewImageFiles, setPreviewImageFiles] = useState<ImageFile[]>([]);
+  const [previewImageFiles, setPreviewImageFiles] = useState<ImageFileWithId[]>(
+    [],
+  );
   const resizing = useMemo(() => resizingCount > 0, [resizingCount]);
 
   const handleChangeFile = useCallback(
@@ -39,22 +42,32 @@ const HomePage = () => {
     setResizingCount((prev) => prev - 1);
   }, []);
 
-  const handleResize = useCallback((imageFile: ImageFile, index: number) => {
+  const handleResize = useCallback((imageFile: ImageFile, id: string) => {
     setPreviewImageFiles((prev) => {
       const newPreviewImageFiles = [...prev];
-      newPreviewImageFiles[index] = imageFile;
+      const index = newPreviewImageFiles.findIndex((item) => item.id === id);
+      if (index === -1) {
+        // added
+        newPreviewImageFiles.push({ imageFile, id });
+      } else {
+        newPreviewImageFiles[index] = { imageFile, id };
+      }
       return newPreviewImageFiles;
     });
   }, []);
 
-  const handleRemoveImage = useCallback((index: number) => {
+  const handleRemoveImage = useCallback((id: string) => {
     setFiles((prev) => {
       const newFiles = [...prev];
+      const index = newFiles.findIndex((item) => item.id === id);
+      if (index === -1) return prev;
       newFiles.splice(index, 1);
       return newFiles;
     });
     setPreviewImageFiles((prev) => {
       const newPreviewImageFiles = [...prev];
+      const index = newPreviewImageFiles.findIndex((item) => item.id === id);
+      if (index === -1) return prev;
       newPreviewImageFiles.splice(index, 1);
       return newPreviewImageFiles;
     });
@@ -70,11 +83,11 @@ const HomePage = () => {
       />
 
       <div className="flex flex-col gap-2">
-        {files.map((file, i) => (
+        {files.map((file) => (
           <ImageListItem
             key={file.id}
             file={file.file}
-            index={i}
+            id={file.id}
             onStartResize={handleStartResize}
             onEndResize={handleEndResize}
             onResize={handleResize}
@@ -84,7 +97,12 @@ const HomePage = () => {
       </div>
 
       <div className="flex justify-center">
-        <ZipButton imageFiles={previewImageFiles} disabled={resizing} />
+        <ZipButton
+          imageFiles={previewImageFiles.map(
+            (previewImageFile) => previewImageFile.imageFile,
+          )}
+          disabled={resizing}
+        />
       </div>
     </div>
   );

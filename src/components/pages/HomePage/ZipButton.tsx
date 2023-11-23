@@ -29,11 +29,24 @@ const ZipButton = memo(({ imageFiles, disabled }: ZipButtonProps) => {
 
     setZipping(true);
 
+    const names = new Map<string, number>();
+
     const zip = new JSZip();
     for (const imageFile of imageFiles) {
       if (!imageFile) continue;
+
+      const name = names.get(imageFile.name) ?? 0;
+      names.set(imageFile.name, name + 1);
+
       const base64 = dataUrlToBase64(imageFile.dataUrl);
-      zip.file(imageFile.name, base64, { base64: true });
+
+      const fileExtension = imageFile.name.split(".").pop();
+      const fileBasename = imageFile.name.replace(`.${fileExtension}`, "");
+      const filename =
+        name === 0
+          ? imageFile.name
+          : `${fileBasename} (${name}).${fileExtension}`;
+      zip.file(filename, base64, { base64: true });
     }
     zip.generateAsync({ type: "blob" }).then((blob) => {
       if (!unmounted) {

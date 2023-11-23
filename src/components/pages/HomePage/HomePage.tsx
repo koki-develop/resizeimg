@@ -73,6 +73,13 @@ const HomePage = () => {
     });
   }, []);
 
+  const handleRemoveAllImages = useCallback(() => {
+    if (!confirm("プレビュー中のすべての画像を削除しますか？")) return;
+
+    setFiles([]);
+    setPreviewImageFiles([]);
+  }, []);
+
   return (
     <div className="flex flex-col gap-4">
       <input
@@ -96,13 +103,21 @@ const HomePage = () => {
         ))}
       </div>
 
-      <div className="flex justify-center">
+      <div className="flex items-center gap-2 flex-col">
         <ZipButton
           imageFiles={previewImageFiles.map(
             (previewImageFile) => previewImageFile.imageFile,
           )}
           disabled={resizing}
         />
+
+        <button
+          className="bg-red-500 p-2 text-sm text-white disabled:bg-gray-400"
+          onClick={handleRemoveAllImages}
+          disabled={files.length === 0}
+        >
+          すべて削除
+        </button>
       </div>
     </div>
   );

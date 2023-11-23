@@ -31,6 +31,7 @@ const ZipButton = memo(({ imageFiles, disabled }: ZipButtonProps) => {
 
     const zip = new JSZip();
     for (const imageFile of imageFiles) {
+      if (!imageFile) continue;
       const base64 = dataUrlToBase64(imageFile.dataUrl);
       zip.file(imageFile.name, base64, { base64: true });
     }

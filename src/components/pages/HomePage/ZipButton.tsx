@@ -2,6 +2,7 @@ import { dataUrlToBase64 } from "@/lib/image";
 import { ImageFile } from "@/types/imageFile";
 import { saveAs } from "file-saver";
 import JSZip from "jszip";
+import prettyBytes from "pretty-bytes";
 import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 
 export type ZipButtonProps = {
@@ -11,9 +12,20 @@ export type ZipButtonProps = {
 
 const ZipButton = memo(({ imageFiles, disabled }: ZipButtonProps) => {
   const [zipBlob, setZipBlob] = useState<Blob | null>(null);
+  const [zipping, setZipping] = useState<boolean>(false);
+
+  const buttonDisabled = useMemo(() => {
+    return imageFiles.length === 0 || disabled || zipping;
+  }, [disabled, imageFiles.length, zipping]);
+
+  const zipBlobSize = useMemo(() => {
+    return zipBlob ? zipBlob.size : 0;
+  }, [zipBlob]);
 
   useEffect(() => {
     let unmounted = false;
+
+    setZipping(true);
 
     const zip = new JSZip();
     for (const imageFile of imageFiles) {
@@ -23,6 +35,7 @@ const ZipButton = memo(({ imageFiles, disabled }: ZipButtonProps) => {
     zip.generateAsync({ type: "blob" }).then((blob) => {
       if (!unmounted) {
         setZipBlob(blob);
+        setZipping(false);
       }
     });
 
@@ -38,8 +51,15 @@ const ZipButton = memo(({ imageFiles, disabled }: ZipButtonProps) => {
   }, [zipBlob]);
 
   return (
-    <button onClick={handleClickDownload} disabled={disabled}>
-      Zip 形式でまとめてダウンロード
+    <button
+      className="flex items-center flex-col bg-blue-400 text-white p-2 disabled:bg-gray-400"
+      onClick={handleClickDownload}
+      disabled={buttonDisabled}
+    >
+      <span>Zip 形式でまとめてダウンロード</span>
+      <span className="text-sm">
+        {zipping ? "計算中" : prettyBytes(zipBlobSize)}
+      </span>
     </button>
   );
 });

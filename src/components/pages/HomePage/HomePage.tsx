@@ -81,7 +81,9 @@ const HomePage = () => {
         />
       ))}
 
-      <ZipButton imageFiles={previewImageFiles} disabled={resizing} />
+      <div className="flex justify-center">
+        <ZipButton imageFiles={previewImageFiles} disabled={resizing} />
+      </div>
     </div>
   );
 };

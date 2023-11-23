@@ -1,8 +1,9 @@
 import { ImageFile, ImageSize } from "@/types/imageFile";
 import prettyBytes from "pretty-bytes";
-import React, { memo, useCallback } from "react";
+import React, { memo, useCallback, useState } from "react";
 
 export type ImagePreviewProps = {
+  aspectRatio: number;
   imageFile: ImageFile | null;
   imageSize: ImageSize;
   loading: boolean;
@@ -11,7 +12,16 @@ export type ImagePreviewProps = {
 };
 
 const ImagePreview = memo<ImagePreviewProps>(
-  ({ imageFile, imageSize, loading, onChangeSize }) => {
+  ({ aspectRatio, imageFile, imageSize, loading, onChangeSize }) => {
+    const [keepAspectRatio, setKeepAspectRatio] = useState<boolean>(true);
+
+    const handleChangeKeepAspectRatio = useCallback(
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+        setKeepAspectRatio(e.target.checked);
+      },
+      [],
+    );
+
     const handleChangeSize = useCallback(
       (size: ImageSize) => {
         if (!onChangeSize) return;
@@ -24,18 +34,20 @@ const ImagePreview = memo<ImagePreviewProps>(
       (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         const width = Number(value);
-        handleChangeSize({ ...imageSize, width });
+        const height = keepAspectRatio ? width / aspectRatio : imageSize.height;
+        handleChangeSize({ width, height });
       },
-      [handleChangeSize, imageSize],
+      [handleChangeSize, imageSize, keepAspectRatio, aspectRatio],
     );
 
     const handleChangeHeight = useCallback(
       (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         const height = Number(value);
-        handleChangeSize({ ...imageSize, height });
+        const width = keepAspectRatio ? height * aspectRatio : imageSize.width;
+        handleChangeSize({ width, height });
       },
-      [handleChangeSize, imageSize],
+      [handleChangeSize, imageSize, keepAspectRatio, aspectRatio],
     );
 
     return (
@@ -70,7 +82,7 @@ const ImagePreview = memo<ImagePreviewProps>(
                 {onChangeSize ? (
                   <span className="flex">
                     <input
-                      className="text-right w-full"
+                      className="text-right w-full border"
                       type="number"
                       value={imageSize.width}
                       onChange={handleChangeWidth}
@@ -90,7 +102,7 @@ const ImagePreview = memo<ImagePreviewProps>(
                 {onChangeSize ? (
                   <span className="flex">
                     <input
-                      className="text-right w-full"
+                      className="text-right w-full border"
                       type="number"
                       value={imageSize.height}
                       onChange={handleChangeHeight}
@@ -104,6 +116,17 @@ const ImagePreview = memo<ImagePreviewProps>(
             </tr>
           </tbody>
         </table>
+
+        {onChangeSize && (
+          <div className="flex gap-2">
+            <span>縦横比を維持する</span>
+            <input
+              type="checkbox"
+              checked={keepAspectRatio}
+              onChange={handleChangeKeepAspectRatio}
+            />
+          </div>
+        )}
       </div>
     );
   },

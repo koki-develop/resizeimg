@@ -8,7 +8,7 @@ import {
   fileToDataUrl,
   resizeDataUrl,
 } from "@/lib/image";
-import React, { memo, useCallback, useEffect, useState } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import ImagePreview from "./ImagePreview";
 import { saveAs } from "file-saver";
 
@@ -37,6 +37,10 @@ const ImageListItem = memo<ImageListItemProps>(
       width: 0,
       height: 0,
     });
+
+    const originalImageAspectRatio = useMemo(() => {
+      return originalImageSize.width / originalImageSize.height;
+    }, [originalImageSize]);
 
     const handleChangePreviewImageSize = useCallback((size: ImageSize) => {
       setPreviewImageSize(size);
@@ -124,9 +128,13 @@ const ImageListItem = memo<ImageListItemProps>(
           />
         </div>
 
+        {/* arrow */}
+        <div className="flex items-center justify-center">→</div>
+
         {/* preview image */}
         <div>
           <ImagePreview
+            aspectRatio={originalImageAspectRatio}
             imageFile={previewImage}
             imageSize={previewImageSize}
             loading={resizing}

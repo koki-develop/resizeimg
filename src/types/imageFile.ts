@@ -1,5 +1,10 @@
 export type ImageFile = {
   name: string;
   dataUrl: string;
-  size: number;
+  filesize: number;
+};
+
+export type ImageSize = {
+  width: number;
+  height: number;
 };

@@ -119,22 +119,22 @@ const ImageListItem = memo<ImageListItemProps>(
     ]);
 
     return (
-      <div className="flex items-center justify-center gap-4">
+      <div className="flex items-start justify-center gap-4">
         {/* original image */}
         <div>
           <ImagePreview
+            label="元画像"
+            aspectRatio={originalImageAspectRatio}
             loading={!originalImage}
             imageFile={originalImage}
             imageSize={originalImageSize}
           />
         </div>
 
-        {/* arrow */}
-        <div className="flex items-center justify-center">→</div>
-
         {/* preview image */}
         <div>
           <ImagePreview
+            label="変換後"
             aspectRatio={originalImageAspectRatio}
             imageFile={previewImage}
             imageSize={previewImageSize}

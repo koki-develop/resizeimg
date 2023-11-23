@@ -3,6 +3,7 @@ import prettyBytes from "pretty-bytes";
 import React, { memo, useCallback, useState } from "react";
 
 export type ImagePreviewProps = {
+  label: string;
   aspectRatio: number;
   imageFile: ImageFile | null;
   imageSize: ImageSize;
@@ -12,7 +13,7 @@ export type ImagePreviewProps = {
 };
 
 const ImagePreview = memo<ImagePreviewProps>(
-  ({ aspectRatio, imageFile, imageSize, loading, onChangeSize }) => {
+  ({ label, aspectRatio, imageFile, imageSize, loading, onChangeSize }) => {
     const [keepAspectRatio, setKeepAspectRatio] = useState<boolean>(true);
 
     const handleChangeKeepAspectRatio = useCallback(
@@ -51,8 +52,8 @@ const ImagePreview = memo<ImagePreviewProps>(
     );
 
     return (
-      <div className="flex flex-col items-center">
-        <div className="h-64 w-64">
+      <div className="flex flex-col items-center gap-2">
+        <div className="h-64 w-64 flex items-center justify-center shadow border">
           {imageFile && !loading ? (
             <img
               className="h-full w-full object-contain"
@@ -60,16 +61,22 @@ const ImagePreview = memo<ImagePreviewProps>(
               alt=""
             />
           ) : (
-            <div className="h-full w-full flex items-center justify-center">
-              loading...
+            <div className="h-full w-full flex flex-col gap-2 items-center justify-center">
+              <div className="loader" />
+              <span className="text-sm text-gray-500">読み込み中...</span>
             </div>
           )}
         </div>
 
-        <div className="text-gray-500 text-sm">
-          {imageFile && !loading
-            ? prettyBytes(imageFile.filesize)
-            : "ファイルサイズを計算中"}
+        <div className="text-gray-500 flex flex-col justify-center">
+          <div className="text-sm">{label}</div>
+          <div className="text-sm">
+            (
+            {imageFile && !loading
+              ? prettyBytes(imageFile.filesize)
+              : "ファイルサイズを計算中"}
+            )
+          </div>
         </div>
 
         <table className="w-full">

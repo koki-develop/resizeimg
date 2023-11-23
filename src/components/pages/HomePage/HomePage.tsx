@@ -92,8 +92,8 @@ const HomePage = () => {
             "cursor-pointer",
             "py-20 px-8 mb-4",
             {
-              "bg-gray-200": !isDragActive,
-              "bg-gray-400": isDragActive,
+              "bg-gray-100": !isDragActive,
+              "bg-gray-300": isDragActive,
             },
           )}
           {...getRootProps()}
@@ -105,7 +105,7 @@ const HomePage = () => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-8">
         {files.map((file) => (
           <ImageListItem
             key={file.id}
